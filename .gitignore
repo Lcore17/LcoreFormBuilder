@@ -1,0 +1,30 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Node
+node_modules
+
+# Build outputs
+.next
+out
+dist
+
+# Env files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Prisma
+backend/prisma/dev.db
+backend/prisma/*.db-journal
+
+# OS
+.DS_Store
+Thumbs.db

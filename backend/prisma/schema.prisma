@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  forms     Form[]
+}
+
+model Form {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?
+  isPublic        Boolean  @default(false)
+  publicId        String   @unique @default(cuid())
+  brandColor      String?  @default("#3b82f6")
+  startDate       DateTime?
+  endDate         DateTime?
+  maxSubmissions  Int?
+  thankYouMessage String?
+  redirectUrl     String?
+  language        String   @default("en")
+  webhookUrl      String?
+  enableCaptcha   Boolean  @default(false)
+  passwordHash    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  owner           User     @relation(fields: [ownerId], references: [id])
+  ownerId         String
+  fields          Field[]
+  submissions     Submission[]
+  versions        FormVersion[]
+}
+
+model Field {
+  id         String @id @default(cuid())
+  label      String
+  type       String
+  required   Boolean @default(false)
+  order      Int
+  minLength  Int?
+  maxLength  Int?
+  pattern    String?
+  minValue   Float?
+  maxValue   Float?
+  options    String[]
+  form       Form   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId     String
+  responses  Response[]
+}
+
+model Submission {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  ip         String?
+  isDraft    Boolean  @default(false)
+  form       Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId     String
+  responses  Response[]
+}
+
+model Response {
+  id           String @id @default(cuid())
+  field        Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  fieldId      String
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  submissionId String
+  value        String
+}
+
+model FormVersion {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId    String
+  data      Json
+}

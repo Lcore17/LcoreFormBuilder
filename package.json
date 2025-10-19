@@ -1,0 +1,16 @@
+{
+  "name": "lcore-forms",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm -w backend run build && npm -w frontend run build",
+    "dev": "concurrently \"npm -w backend run dev\" \"npm -w frontend run dev\"",
+    "start": "npm -w backend run start && npm -w frontend run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

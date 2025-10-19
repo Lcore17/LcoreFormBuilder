@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: lcore-forms-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build && npx prisma migrate deploy
+    startCommand: node dist/main.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
