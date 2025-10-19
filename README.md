@@ -1,7 +1,4 @@
 
-<p align="center">
-   <img src="https://raw.githubusercontent.com/Lcore17/LcoreFormBuilder/main/frontend/public/logo.svg" alt="Lcore Forms Logo" width="120" />
-</p>
 
 <h1 align="center">Lcore Forms</h1>
 
