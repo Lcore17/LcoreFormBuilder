@@ -18,18 +18,26 @@ export class AuthController {
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { token, user } = await this.authService.login(dto);
     const isProd = process.env.NODE_ENV === 'production';
+    
+    // For cross-origin cookies (Vercel + Render), we need SameSite=None and Secure=true
     res.cookie('access_token', token, {
       httpOnly: true,
       sameSite: isProd ? 'none' : 'lax',
-      secure: isProd,
+      secure: true, // Always secure in production (HTTPS required)
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
     });
     return { user };
   }
 
   @Post('logout')
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('access_token');
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: true,
+      path: '/',
+    });
     return { success: true };
   }
 
