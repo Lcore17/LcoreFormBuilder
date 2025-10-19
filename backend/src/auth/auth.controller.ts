@@ -7,46 +7,37 @@ import { LoginDto, RegisterDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private users: UsersService) {}
+	constructor(private readonly authService: AuthService, private users: UsersService) {}
 
-  @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
-  }
+	@Post('register')
+	async register(@Body() dto: RegisterDto) {
+		return this.authService.register(dto);
+	}
 
-  @Post('login')
-  async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const { token, user } = await this.authService.login(dto);
-    const isProd = process.env.NODE_ENV === 'production';
+	@Post('login')
+	async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
+		const { token, user } = await this.authService.login(dto);
+		const isProd = process.env.NODE_ENV === 'production';
+		res.cookie('access_token', token, {
+			httpOnly: true,
+			sameSite: isProd ? 'none' : 'lax',
+			secure: isProd,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+		});
+		return { user };
+	}
 
-    // For cross-origin cookies (Vercel + Render), we need SameSite=None and Secure=true
-    res.cookie('access_token', token, {
-      httpOnly: true,
-      sameSite: isProd ? 'none' : 'lax',
-      secure: isProd, // Must be true in production for HTTPS
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: '/',
-    });
-    return { user };
-  }
+	@Post('logout')
+	async logout(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie('access_token');
+		return { success: true };
+	}
 
-  @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    const isProd = process.env.NODE_ENV === 'production';
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      sameSite: isProd ? 'none' : 'lax',
-      secure: isProd,
-      path: '/',
-    });
-    return { success: true };
-  }
-
-  @Get('me')
-  @UseGuards(AuthGuard('jwt'))
-  async me(@Req() req: any) {
-    const userId = req.user?.userId;
-    const user = await this.users.findById(userId);
-    return { user };
-  }
+	@Get('me')
+	@UseGuards(AuthGuard('jwt'))
+	async me(@Req() req: any) {
+		const userId = req.user?.userId;
+		const user = await this.users.findById(userId);
+		return { user };
+	}
 }
