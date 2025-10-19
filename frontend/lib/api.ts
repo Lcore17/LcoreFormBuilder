@@ -2,13 +2,18 @@
 const RAW_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 export const API_URL = RAW_API_URL.replace(/\/+$/, '');
 
+// Log API URL in development/production for debugging
+if (typeof window !== 'undefined') {
+  console.log('API_URL configured as:', API_URL);
+}
+
 function joinUrl(base: string, path: string) {
   const p = path.startsWith('/') ? path : `/${path}`;
   return `${base}${p}`;
 }
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  if (process.env.NODE_ENV === 'production') {
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
     if (!process.env.NEXT_PUBLIC_API_URL || /^http:\/\/localhost/.test(process.env.NEXT_PUBLIC_API_URL)) {
       console.warn('NEXT_PUBLIC_API_URL is not set to a public backend URL in production.');
     }
