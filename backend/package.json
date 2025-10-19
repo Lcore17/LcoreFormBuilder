@@ -42,6 +42,9 @@
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^5.0.1"
   },
+  "engines": {
+    "node": ">=18 <22"
+  },
   "devDependencies": {
     "@nestjs/cli": "^10.4.5",
     "@nestjs/schematics": "^10.1.1",

@@ -9,6 +9,7 @@ pnpm-debug.log*
 # Node
 node_modules
 
+
 # Build outputs
 .next
 out
