@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { UserPlus, Mail, Lock, User } from 'lucide-react';
+import { API_URL } from '@/lib/api';
 
 export default function RegisterPage() {
   const r = useRouter();
@@ -10,7 +11,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; server?: string }>({});
-  const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export default function RegisterPage() {
     if (Object.keys(next).length > 0) return;
     setLoading(true);
     try {
-      const res = await fetch(`${api}/api/auth/register`, {
+      const res = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
@@ -33,12 +33,20 @@ export default function RegisterPage() {
         alert('Account created! Please login.');
         window.location.href = '/login';
       } else {
-        const data = await res.json().catch(() => null);
-        setErrors({ server: data?.message || 'Registration failed. Please try again.' });
+        const text = await res.text();
+        let errorMsg = 'Registration failed. Please try again.';
+        try {
+          const data = JSON.parse(text);
+          errorMsg = data?.message || errorMsg;
+        } catch {
+          console.error('Registration error:', text);
+        }
+        setErrors({ server: errorMsg });
       }
     } catch (error) {
+      console.error('Registration fetch error:', error);
       setLoading(false);
-      setErrors({ server: 'Registration failed. Please try again.' });
+      setErrors({ server: 'Registration failed. Please check your connection and try again.' });
     }
   };
 

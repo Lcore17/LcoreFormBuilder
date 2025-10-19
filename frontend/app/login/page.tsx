@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LogIn, Mail, Lock } from 'lucide-react';
+import { API_URL } from '@/lib/api';
 
 export default function LoginPage() {
   const r = useRouter();
@@ -9,7 +10,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string; server?: string }>({});
-  const api = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ export default function LoginPage() {
     if (Object.keys(nextErrors).length > 0) return;
     setLoading(true);
     try {
-      const res = await fetch(`${api}/api/auth/login`, {
+      const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -32,12 +32,20 @@ export default function LoginPage() {
         // Force a full page reload to update auth state everywhere
         window.location.href = '/forms';
       } else {
-        const data = await res.json().catch(() => null);
-        setErrors({ server: data?.message || 'Invalid credentials' });
+        const text = await res.text();
+        let errorMsg = 'Invalid credentials';
+        try {
+          const data = JSON.parse(text);
+          errorMsg = data?.message || errorMsg;
+        } catch {
+          console.error('Login error:', text);
+        }
+        setErrors({ server: errorMsg });
       }
     } catch (error) {
+      console.error('Login fetch error:', error);
       setLoading(false);
-      setErrors({ server: 'Login failed. Please try again.' });
+      setErrors({ server: 'Login failed. Please check your connection and try again.' });
     }
   };
 
