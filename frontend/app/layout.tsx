@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white">
+      <body className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-white pt-16">
         <ToastProvider>
           <Navbar />
           {children}
