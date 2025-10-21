@@ -56,7 +56,15 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   }, [form, isInitialized]);
 
   const addField = (type: string) => {
-    setFields((prev) => [...prev, { label: 'New Field', type, order: prev.length }]);
+    setFields((prev) => {
+      const newField: Field = { 
+        label: 'New Field', 
+        type, 
+        order: prev.length,
+        options: (type === 'radio' || type === 'checkbox') ? ['Option 1', 'Option 2'] : undefined
+      };
+      return [...prev, newField];
+    });
   };
   
   const updateField = (i: number, patch: Partial<Field>) => {
