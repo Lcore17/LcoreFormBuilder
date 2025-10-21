@@ -41,6 +41,11 @@ export class AuthController {
 	@Get('me')
 	@UseGuards(AuthGuard('jwt'))
 	async me(@Req() req: any) {
+        console.log('Auth /me request', {
+          cookies: req.cookies,
+          headers: req.headers,
+          origin: req.headers.origin,
+        });
 		const userId = req.user?.userId;
 		const user = await this.users.findById(userId);
 		return { user };
