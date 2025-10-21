@@ -4,9 +4,9 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "prisma migrate deploy && nest build",
-    "start": "node dist/main.js",
-    "start:prod": "nest start",
+    "build": "nest build",
+    "start": "prisma migrate deploy && node dist/main.js",
+    "start:prod": "prisma migrate deploy && nest start",
     "start:dev": "nest start --watch",
     "dev": "npm run start:dev",
     "prisma:generate": "prisma generate",
