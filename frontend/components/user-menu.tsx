@@ -15,14 +15,24 @@ export default function UserMenu() {
     (async () => {
       try {
         const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+        if (!token) {
+          // No token, user is not logged in
+          if (active) setLoading(false);
+          return;
+        }
         const res = await fetch(`${API_URL}/api/auth/me`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
           const data = (await res.json()) as Me;
           if (active) setMe(data);
+        } else {
+          // Token invalid or expired, remove it
+          localStorage.removeItem('access_token');
         }
-      } catch {}
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
+      }
       if (active) setLoading(false);
     })();
     return () => {
