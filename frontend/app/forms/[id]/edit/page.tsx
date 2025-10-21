@@ -22,7 +22,14 @@ import {
 
 type Field = { id?: string; label: string; type: string; required?: boolean; options?: string[]; order: number };
 
-const fetcher = (url: string) => fetch(url, { credentials: 'include' }).then((r) => r.json());
+const fetcher = (url: string) => {
+  const token = localStorage.getItem('access_token');
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return fetch(url, { credentials: 'include', headers }).then((r) => r.json());
+};
 
 export default function EditFormPage({ params }: { params: { id: string } }) {
   const { isChecking } = useAuth();
@@ -35,7 +42,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   const [fields, setFields] = useState<Field[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [password, setPassword] = useState<string>('');
-  const { data: versions } = useSWR(`${API_URL}/api/forms/${params.id}/versions`, (u) => fetch(u, { credentials: 'include' }).then(r => r.json()));
+  const { data: versions } = useSWR(`${API_URL}/api/forms/${params.id}/versions`, fetcher);
 
   // Load form data when it's fetched
   useEffect(() => {
@@ -59,17 +66,24 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   const removeField = (i: number) => setFields((prev) => prev.filter((_, idx) => idx !== i));
 
   const save = async () => {
+    const token = localStorage.getItem('access_token');
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
     const res = await fetch(`${API_URL}/api/forms/${params.id}`, {
       method: 'PUT',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ title, description, isPublic, fields, password: password || undefined }),
+      headers,
+      body: JSON.stringify({ title, description, isPublic, fields, password: password || undefined }),
     });
     
     if (res.ok) {
       r.push('/forms');
     } else {
-      alert('Failed to update form');
+      const errorText = await res.text().catch(() => 'Unknown error');
+      console.error('Failed to update form:', errorText);
+      alert('Failed to update form: ' + errorText);
     }
   };
 

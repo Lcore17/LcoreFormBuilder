@@ -72,10 +72,15 @@ export default function NewFormPage() {
   const removeField = (i: number) => setFields((prev) => prev.filter((_, idx) => idx !== i));
 
   const save = async () => {
+    const token = localStorage.getItem('access_token');
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
     const res = await fetch(`${API_URL}/api/forms`, {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({ 
         title, 
         description, 
@@ -96,7 +101,9 @@ export default function NewFormPage() {
     if (res.ok) {
       r.push('/forms');
     } else {
-      alert('Failed to save form');
+      const errorText = await res.text().catch(() => 'Unknown error');
+      console.error('Failed to save form:', errorText);
+      alert('Failed to save form: ' + errorText);
     }
   };
 

@@ -8,7 +8,14 @@ import { Button } from '../../components/ui/button';
 import { useToast } from '../../components/ui/toast';
 import { FileText, BarChart3, ListChecks, Search, ExternalLink, Copy, Loader2, Trash2, Edit, Sparkles } from 'lucide-react';
 
-const fetcher = (url: string) => fetch(url, { credentials: 'include' }).then((r) => r.json());
+const fetcher = (url: string) => {
+  const token = localStorage.getItem('access_token');
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return fetch(url, { credentials: 'include', headers }).then((r) => r.json());
+};
 
 export default function FormsPage() {
   const { isChecking, isAuthenticated } = useAuth();
@@ -32,9 +39,15 @@ export default function FormsPage() {
 
     setDeletingId(id);
     try {
+      const token = localStorage.getItem('access_token');
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const res = await fetch(`${API_URL}/api/forms/${id}`, {
         method: 'DELETE',
         credentials: 'include',
+        headers,
       });
 
       if (res.ok) {
