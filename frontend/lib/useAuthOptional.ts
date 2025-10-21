@@ -10,7 +10,12 @@ export function useAuthOptional() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include' });
+        const token = localStorage.getItem('access_token');
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
         if (mounted) {
           setIsAuthenticated(res.ok);
           setIsChecking(false);

@@ -14,25 +14,17 @@ export default function UserMenu() {
     let active = true;
     (async () => {
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-        if (!token) {
-          // No token, user is not logged in
-          if (active) setLoading(false);
-          return;
+        const token = localStorage.getItem('access_token');
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
         }
-        const res = await fetch(`${API_URL}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
         if (res.ok) {
           const data = (await res.json()) as Me;
           if (active) setMe(data);
-        } else {
-          // Token invalid or expired, remove it
-          localStorage.removeItem('access_token');
         }
-      } catch (err) {
-        console.error('Failed to fetch user:', err);
-      }
+      } catch {}
       if (active) setLoading(false);
     })();
     return () => {
@@ -42,13 +34,12 @@ export default function UserMenu() {
 
   const logout = async () => {
     try {
-      await fetch(`${API_URL}/api/auth/logout`, { method: 'POST' });
-      localStorage.removeItem('access_token');
-      window.location.href = '/';
-    } catch (error) {
-      localStorage.removeItem('access_token');
-      window.location.href = '/';
-    }
+      await fetch(`${API_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' });
+    } catch {}
+    // Clear token from localStorage
+    localStorage.removeItem('access_token');
+    // Force full page reload to clear all auth state and redirect to home
+    window.location.href = '/';
   };
 
   if (loading) return null;

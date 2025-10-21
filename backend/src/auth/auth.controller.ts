@@ -15,22 +15,33 @@ export class AuthController {
 	}
 
 	@Post('login')
-	async login(@Body() dto: LoginDto) {
+	async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
 		const { token, user } = await this.authService.login(dto);
-		// Return JWT in response body for frontend to store in localStorage
-		return { token, user };
+		const isProd = process.env.NODE_ENV === 'production';
+		const cookieOptions: any = {
+			httpOnly: true,
+			sameSite: isProd ? 'none' : 'lax',
+			secure: isProd,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+		};
+		if (isProd && process.env.COOKIE_DOMAIN) {
+			cookieOptions.domain = process.env.COOKIE_DOMAIN;
+		}
+		// Fallback: do NOT set domain if not specified, to maximize compatibility
+		res.cookie('access_token', token, cookieOptions);
+		// Also return token in body for cross-domain compatibility (Render + Vercel)
+		return { user, token };
 	}
 
 	@Post('logout')
-	async logout() {
-		// No cookie to clear; frontend should remove JWT from localStorage
+	async logout(@Res({ passthrough: true }) res: Response) {
+		res.clearCookie('access_token');
 		return { success: true };
 	}
 
 	@Get('me')
 	@UseGuards(AuthGuard('jwt'))
 	async me(@Req() req: any) {
-		// AuthGuard will extract JWT from Authorization header
 		const userId = req.user?.userId;
 		const user = await this.users.findById(userId);
 		return { user };

@@ -12,8 +12,14 @@ export function useAuth() {
     let mounted = true;
     (async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include' });
+        const token = localStorage.getItem('access_token');
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
         if (!res.ok && mounted) {
+          localStorage.removeItem('access_token');
           window.location.href = '/login';
         } else if (mounted) {
           setIsAuthenticated(true);
@@ -21,6 +27,7 @@ export function useAuth() {
         }
       } catch {
         if (mounted) {
+          localStorage.removeItem('access_token');
           window.location.href = '/login';
         }
       }
