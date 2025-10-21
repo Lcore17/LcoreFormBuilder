@@ -343,18 +343,19 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
           </section>
 
           {/* Right Column - Preview */}
-          <section className="lg:sticky lg:top-[88px] lg:self-start">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <Eye className="h-4 w-4" />
-                <span className="font-medium">Live Preview</span>
+          <section>
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                  <Eye className="h-4 w-4" />
+                  <span className="font-medium">Live Preview</span>
+                </div>
+                <span className="badge">
+                  Updates in real-time
+                </span>
               </div>
-              <span className="badge">
-                Updates in real-time
-              </span>
-            </div>
-            
-            <div className="card overflow-hidden max-h-[calc(100vh-120px)] overflow-y-auto">
+          
+              <div className="card overflow-hidden">
             {/* Form Header */}
             <div className="bg-gradient-to-r from-[color:var(--brand-50)] to-[color:var(--brand-100)] dark:from-slate-800 dark:to-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-start gap-3">
@@ -501,6 +502,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
               )}
             </div>
           </div>
+        </div>
           </section>
 
           {/* Version History - Full Width Below */}
