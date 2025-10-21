@@ -86,9 +86,9 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-[72px]">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Header Section - Fixed at top */}
-      <div className="fixed top-16 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="fixed top-16 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {/* Back Button + Title */}
@@ -163,7 +163,7 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 mt-[72px]">
 
         {!submissions || submissions.length === 0 ? (
           <div className="card max-w-2xl mx-auto p-6">
