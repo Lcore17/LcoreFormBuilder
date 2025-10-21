@@ -128,6 +128,16 @@ export class SubmissionsService {
   }
 
   list(formId: string) {
-    return this.prisma.submission.findMany({ where: { formId }, include: { responses: true } });
+    return this.prisma.submission.findMany({ 
+      where: { formId }, 
+      include: { 
+        responses: { 
+          include: { 
+            field: true 
+          } 
+        } 
+      },
+      orderBy: { createdAt: 'desc' }
+    });
   }
 }
