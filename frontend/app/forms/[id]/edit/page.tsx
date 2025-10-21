@@ -20,6 +20,9 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
+// Force dynamic rendering since this page requires authentication
+export const dynamic = 'force-dynamic';
+
 type Field = { id?: string; label: string; type: string; required?: boolean; options?: string[]; order: number };
 
 const fetcher = (url: string) => {

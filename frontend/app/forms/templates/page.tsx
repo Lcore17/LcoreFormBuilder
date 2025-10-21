@@ -17,6 +17,9 @@ import {
   Sparkles
 } from 'lucide-react';
 
+// Force dynamic rendering since this page requires authentication
+export const dynamic = 'force-dynamic';
+
 interface Template {
   id: string;
   name: string;
