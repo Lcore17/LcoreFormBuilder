@@ -37,7 +37,8 @@ export class FormsService {
       },
       include: { fields: true },
     });
-    await this.prisma.formVersion.create({ data: { formId: form.id, data: form } });
+  // Use any cast in case generated Prisma types are stale
+  await (this.prisma as any).formVersion.create({ data: { formId: form.id, data: form } });
     return form;
   }
 
@@ -47,11 +48,12 @@ export class FormsService {
     const { fields = [], password, ...rest } = data;
     // Replace fields for simplicity
     await this.prisma.field.deleteMany({ where: { formId: form.id } });
-    const updated = await this.prisma.form.update({
+  const updated = await this.prisma.form.update({
       where: { id },
       data: {
         ...rest,
-        passwordHash: password === undefined ? form.passwordHash : (password ? await (await import('bcrypt')).hash(password, 10) : null),
+  // Cast to any to access passwordHash safely across Prisma type generations
+  passwordHash: password === undefined ? (form as any).passwordHash : (password ? await (await import('bcrypt')).hash(password, 10) : null),
         fields: {
           create: fields.map((f: any, idx: number) => ({
             label: f.label,
@@ -69,7 +71,7 @@ export class FormsService {
       },
       include: { fields: true },
     });
-    await this.prisma.formVersion.create({ data: { formId: updated.id, data: updated } });
+  await (this.prisma as any).formVersion.create({ data: { formId: updated.id, data: updated } });
     return updated;
   }
 
@@ -101,13 +103,13 @@ export class FormsService {
   async versions(id: string, userId: string) {
     const form = await this.prisma.form.findFirst({ where: { id, ownerId: userId } });
     if (!form) throw new NotFoundException('Form not found');
-    return this.prisma.formVersion.findMany({ where: { formId: id }, orderBy: { createdAt: 'desc' } });
+  return (this.prisma as any).formVersion.findMany({ where: { formId: id }, orderBy: { createdAt: 'desc' } });
   }
 
   async restore(id: string, versionId: string, userId: string) {
     const form = await this.prisma.form.findFirst({ where: { id, ownerId: userId } });
     if (!form) throw new NotFoundException('Form not found');
-    const version = await this.prisma.formVersion.findFirst({ where: { id: versionId, formId: id } });
+  const version = await (this.prisma as any).formVersion.findFirst({ where: { id: versionId, formId: id } });
     if (!version) throw new NotFoundException('Version not found');
     const data: any = version.data as any;
     // Replace current with snapshot
@@ -144,7 +146,7 @@ export class FormsService {
       },
       include: { fields: true },
     });
-    await this.prisma.formVersion.create({ data: { formId: id, data: updated } });
+  await (this.prisma as any).formVersion.create({ data: { formId: id, data: updated } });
     return updated;
   }
 }

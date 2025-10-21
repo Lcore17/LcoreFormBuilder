@@ -24,9 +24,9 @@ export class SubmissionsService {
     }
 
     // Password protection
-    if (form.passwordHash) {
+  if ((form as any).passwordHash) {
       const provided = (data && typeof data.password === 'string') ? data.password : '';
-      const ok = await (await import('bcrypt')).compare(provided, form.passwordHash);
+  const ok = await (await import('bcrypt')).compare(provided, (form as any).passwordHash);
       if (!ok) throw new BadRequestException('Invalid form password');
     }
 
