@@ -13,7 +13,12 @@ export default function FooterAccountLinks() {
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include' });
+        const token = localStorage.getItem('access_token');
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
         if (active) {
           if (res.ok) setMe(await res.json());
           setLoading(false);
