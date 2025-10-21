@@ -623,6 +623,28 @@ export default function NewFormPage() {
                   ))}
                 </div>
               )}
+              
+              {/* Captcha Preview */}
+              {fields.length > 0 && enableCaptcha && (
+                <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <label className="label">Security Check</label>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    Math problem will appear here for verification
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="font-mono text-sm font-semibold px-3 py-2 bg-white dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600">
+                      5 + 7 = ?
+                    </div>
+                    <input 
+                      type="number"
+                      className="input max-w-[80px] text-sm"
+                      placeholder="12"
+                      disabled 
+                    />
+                  </div>
+                </div>
+              )}
+              
               {/* Submit Button Preview */}
               {fields.length > 0 && (
                 <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">

@@ -42,6 +42,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   const [fields, setFields] = useState<Field[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const [password, setPassword] = useState<string>('');
+  const [enableCaptcha, setEnableCaptcha] = useState<boolean>(false);
   const { data: versions } = useSWR(`${API_URL}/api/forms/${params.id}/versions`, fetcher);
 
   // Load form data when it's fetched
@@ -51,6 +52,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       setDescription(form.description || '');
       setIsPublic(form.isPublic !== undefined ? form.isPublic : true);
       setFields(form.fields || []);
+      setEnableCaptcha(form.enableCaptcha || false);
       setIsInitialized(true);
     }
   }, [form, isInitialized]);
@@ -83,7 +85,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       method: 'PUT',
       credentials: 'include',
       headers,
-      body: JSON.stringify({ title, description, isPublic, fields, password: password || undefined }),
+      body: JSON.stringify({ title, description, isPublic, fields, password: password || undefined, enableCaptcha }),
     });
     
     if (res.ok) {
@@ -167,6 +169,17 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
             /> 
             <span className="font-medium">Public Form</span>
           </label>
+          
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              checked={enableCaptcha} 
+              onChange={(e) => setEnableCaptcha(e.target.checked)}
+              className="rounded"
+            /> 
+            <span className="font-medium">Enable CAPTCHA</span>
+          </label>
+          
           <div>
             <label className="label">Form Password (optional)</label>
             <input 
@@ -432,6 +445,27 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
                       )}
                     </div>
                   ))}
+                </div>
+              )}
+              
+              {/* Captcha Preview */}
+              {fields.length > 0 && enableCaptcha && (
+                <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                  <label className="label">Security Check</label>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    Math problem will appear here for verification
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="font-mono text-sm font-semibold px-3 py-2 bg-white dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600">
+                      5 + 7 = ?
+                    </div>
+                    <input 
+                      type="number"
+                      className="input max-w-[80px] text-sm"
+                      placeholder="12"
+                      disabled 
+                    />
+                  </div>
                 </div>
               )}
               

@@ -2,7 +2,7 @@
 import useSWR from 'swr';
 import { API_URL } from '../../../lib/api';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FileText, Send, CheckCircle2, Loader2 } from 'lucide-react';
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
@@ -14,6 +14,15 @@ export default function PublicFormPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [captchaChallenge, setCaptchaChallenge] = useState({ a: 0, b: 0, answer: 0 });
+
+  // Generate captcha challenge when form loads
+  useEffect(() => {
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    setCaptchaChallenge({ a, b, answer: a + b });
+  }, []);
 
   if (!form) {
     return (
@@ -27,6 +36,12 @@ export default function PublicFormPage() {
   }
 
   const submit = async () => {
+    // Validate captcha if enabled
+    if (form.enableCaptcha && parseInt(captchaAnswer) !== captchaChallenge.answer) {
+      alert('Incorrect CAPTCHA answer. Please try again.');
+      return;
+    }
+    
     setLoading(true);
     try {
       const responses = (form.fields || []).map((f: any) => ({ fieldId: f.id, value: values[f.id] ?? '' }));
@@ -160,6 +175,27 @@ export default function PublicFormPage() {
                 )}
               </div>
             ))}
+            
+            {form.enableCaptcha && (
+              <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                <label className="label">Security Check</label>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
+                  Please solve this simple math problem to verify you're human:
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="font-mono text-lg font-semibold px-4 py-2 bg-white dark:bg-slate-900 rounded border border-slate-300 dark:border-slate-600">
+                    {captchaChallenge.a} + {captchaChallenge.b} = ?
+                  </div>
+                  <input 
+                    type="number"
+                    className="input max-w-[100px]"
+                    placeholder="Answer"
+                    value={captchaAnswer}
+                    onChange={(e) => setCaptchaAnswer(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
             
             <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
               <button 
