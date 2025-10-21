@@ -126,19 +126,42 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="container py-8 grid md:grid-cols-2 gap-6">
-      <section className="space-y-4">
-        <div className="flex items-center gap-3 mb-6">
-          <Link 
-            href="/forms"
-            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
-          <h1 className="section-title">Edit Form</h1>
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* Header */}
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-16 z-40">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <Link 
+                href="/forms"
+                className="flex-shrink-0 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                title="Back to Dashboard"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Edit Form</h1>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">
+                  {title || 'Untitled Form'}
+                </p>
+              </div>
+            </div>
+            <button onClick={save} className="btn btn-primary inline-flex items-center gap-2 flex-shrink-0">
+              <Save className="h-4 w-4" />
+              <span className="hidden sm:inline">Save Changes</span>
+              <span className="sm:hidden">Save</span>
+            </button>
+          </div>
         </div>
-        
-  <div className="card space-y-4">
+      </div>
+
+      {/* Content */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Left Column - Editor */}
+          <section className="space-y-6">
+            {/* Form Settings Card */}
+            <div className="card space-y-4">
           <div>
             <label className="label">Form Title</label>
             <input 
@@ -309,18 +332,10 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
           ))}
         </div>
 
-        <div className="flex gap-3">
-          <button onClick={save} className="btn inline-flex items-center gap-2">
-            <Save className="h-4 w-4" />
-            Save Changes
-          </button>
-          <Link href="/forms" className="btn-outline">
-            Cancel
-          </Link>
-        </div>
-      </section>
+          </section>
 
-      <section>
+          {/* Right Column - Preview */}
+          <section className="lg:sticky lg:top-32 lg:self-start">
         <div className="sticky top-20">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
@@ -482,37 +497,54 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
         </div>
       </section>
 
-      <section className="md:col-span-2">
-        <div className="card p-4">
-          <h2 className="section-title text-base mb-3">Version History</h2>
-          {!versions || versions.length === 0 ? (
-            <p className="muted text-sm">No versions yet.</p>
-          ) : (
-            <ul className="space-y-2">
-              {versions.map((v: any) => (
-                <li key={v.id} className="flex items-center justify-between text-sm">
-                  <span>{new Date(v.createdAt).toLocaleString()}</span>
-                  <button 
-                    className="btn btn-outline btn-sm"
-                    onClick={async () => {
-                      const ok = confirm('Restore this version? This will overwrite current form.');
-                      if (!ok) return;
-                      const res = await fetch(`${API_URL}/api/forms/${params.id}/restore/${v.id}`, { method: 'POST', credentials: 'include' });
-                      if (res.ok) {
-                        window.location.reload();
-                      } else {
-                        alert('Failed to restore version');
-                      }
-                    }}
-                  >
-                    Restore
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* Version History - Full Width Below */}
+          <section className="lg:col-span-2">
+            <div className="card">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+                <FileText className="h-4 w-4 text-[color:var(--brand-600)]" />
+                <h2 className="font-semibold text-slate-900 dark:text-white">Version History</h2>
+              </div>
+              {!versions || versions.length === 0 ? (
+                <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-8">No versions yet.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {versions.map((v: any) => (
+                    <li key={v.id} className="flex items-center justify-between p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-colors">
+                      <span className="text-sm text-slate-600 dark:text-slate-400">
+                        {new Date(v.createdAt).toLocaleString()}
+                      </span>
+                      <button 
+                        className="btn btn-outline btn-sm"
+                        onClick={async () => {
+                          const ok = confirm('Restore this version? This will overwrite current form.');
+                          if (!ok) return;
+                          const token = localStorage.getItem('access_token');
+                          const headers: Record<string, string> = {};
+                          if (token) {
+                            headers['Authorization'] = `Bearer ${token}`;
+                          }
+                          const res = await fetch(`${API_URL}/api/forms/${params.id}/restore/${v.id}`, { 
+                            method: 'POST', 
+                            credentials: 'include',
+                            headers
+                          });
+                          if (res.ok) {
+                            window.location.reload();
+                          } else {
+                            alert('Failed to restore version');
+                          }
+                        }}
+                      >
+                        Restore
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
