@@ -130,27 +130,20 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       {/* Header */}
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-16 z-40">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <Link 
-                href="/forms"
-                className="flex-shrink-0 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                title="Back to Dashboard"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Edit Form</h1>
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">
-                  {title || 'Untitled Form'}
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <Link 
+              href="/forms"
+              className="flex-shrink-0 p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Edit Form</h1>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 truncate">
+                {title || 'Untitled Form'}
+              </p>
             </div>
-            <button onClick={save} className="btn btn-primary inline-flex items-center gap-2 flex-shrink-0">
-              <Save className="h-4 w-4" />
-              <span className="hidden sm:inline">Save Changes</span>
-              <span className="sm:hidden">Save</span>
-            </button>
           </div>
         </div>
       </div>
@@ -560,10 +553,15 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
           </section>
         </div>
       </div>
-      {/* Bottom Action Bar */}
-      <div className="fixed bottom-0 inset-x-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-t border-slate-200 dark:border-slate-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex items-center justify-end gap-2">
+      
+      {/* Bottom Action Bar - Fixed */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              <span className="hidden sm:inline">Remember to save your changes before leaving</span>
+              <span className="sm:hidden">Unsaved changes</span>
+            </div>
             <button onClick={save} className="btn btn-primary inline-flex items-center gap-2">
               <Save className="h-4 w-4" />
               <span className="hidden sm:inline">Save Changes</span>
