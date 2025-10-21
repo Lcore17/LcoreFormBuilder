@@ -126,158 +126,115 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* Top Bar - Fixed on mobile */}
-      <div className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="container">
-          <div className="flex items-center justify-between h-16 gap-3">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <Link 
-                href="/forms"
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex-shrink-0"
-                title="Back to Dashboard"
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-lg font-bold text-slate-900 dark:text-white truncate">
-                  {title || 'Edit Form'}
-                </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
-                  Make changes to your form
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button 
-                onClick={save} 
-                className="btn btn-primary inline-flex items-center gap-2 text-sm px-4 py-2"
-              >
-                <Save className="h-4 w-4" />
-                <span className="hidden sm:inline">Save</span>
-              </button>
-            </div>
+    <main className="container py-8 grid md:grid-cols-2 gap-6">
+      <section className="space-y-4">
+        <div className="flex items-center gap-3 mb-6">
+          <Link 
+            href="/forms"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+          <h1 className="section-title">Edit Form</h1>
+        </div>
+        
+  <div className="card space-y-4">
+          <div>
+            <label className="label">Form Title</label>
+            <input 
+              className="input" 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              placeholder="Enter form title"
+            />
+          </div>
+          
+          <div>
+            <label className="label">Description</label>
+            <textarea 
+              className="input" 
+              placeholder="Brief description of your form" 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+            />
+          </div>
+          
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              checked={isPublic} 
+              onChange={(e) => setIsPublic(e.target.checked)}
+              className="rounded"
+            /> 
+            <span className="font-medium">Public Form</span>
+          </label>
+          
+          <label className="flex items-center gap-2 text-sm">
+            <input 
+              type="checkbox" 
+              checked={enableCaptcha} 
+              onChange={(e) => setEnableCaptcha(e.target.checked)}
+              className="rounded"
+            /> 
+            <span className="font-medium">Enable CAPTCHA</span>
+          </label>
+          
+          <div>
+            <label className="label">Form Password (optional)</label>
+            <input 
+              className="input" 
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Set or update a password"
+            />
+            <p className="text-xs muted mt-1">Leave blank to keep existing. Clear existing by saving empty.</p>
           </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="container py-4 lg:py-6">
-        <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
-          {/* Editor Section */}
-          <section className="space-y-4">
-            {/* Form Settings Card */}
-            <div className="card space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
-                <FileText className="h-4 w-4 text-[color:var(--brand-600)]" />
-                <h2 className="font-semibold text-slate-900 dark:text-white">Form Settings</h2>
-              </div>
-              
-              <div>
-                <label className="label">Form Title *</label>
-                <input 
-                  className="input" 
-                  value={title} 
-                  onChange={(e) => setTitle(e.target.value)} 
-                  placeholder="Enter form title"
-                />
-              </div>
-              
-              <div>
-                <label className="label">Description</label>
-                <textarea 
-                  className="input resize-none" 
-                  placeholder="Brief description of your form" 
-                  value={description} 
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                />
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={isPublic} 
-                    onChange={(e) => setIsPublic(e.target.checked)}
-                    className="rounded cursor-pointer"
-                  /> 
-                  <span className="font-medium">Public Form</span>
-                </label>
-                
-                <label className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    checked={enableCaptcha} 
-                    onChange={(e) => setEnableCaptcha(e.target.checked)}
-                    className="rounded cursor-pointer"
-                  /> 
-                  <span className="font-medium">Enable CAPTCHA</span>
-                </label>
-              </div>
-              
-              <div>
-                <label className="label">Form Password (optional)</label>
-                <input 
-                  className="input" 
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Set or update password"
-                />
-                <p className="text-xs muted mt-1">Leave blank to keep existing</p>
-              </div>
-            </div>
+        <div>
+          <h2 className="section-title text-base mb-3">Add Fields</h2>
+          <div className="flex flex-wrap gap-2">
+            <button 
+              onClick={() => addField('text')} 
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <Type className="h-4 w-4" />
+              Text
+            </button>
+            <button 
+              onClick={() => addField('textarea')} 
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <AlignLeft className="h-4 w-4" />
+              Long Text
+            </button>
+            <button 
+              onClick={() => addField('radio')} 
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <ListOrdered className="h-4 w-4" />
+              Choice
+            </button>
+            <button 
+              onClick={() => addField('checkbox')} 
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <CheckSquare className="h-4 w-4" />
+              Checkbox
+            </button>
+            <button 
+              onClick={() => addField('number')} 
+              className="btn-outline inline-flex items-center gap-2"
+            >
+              <Hash className="h-4 w-4" />
+              Number
+            </button>
+          </div>
+        </div>
 
-            {/* Add Fields Card */}
-            <div className="card">
-              <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800 mb-3">
-                <Plus className="h-4 w-4 text-[color:var(--brand-600)]" />
-                <h2 className="font-semibold text-slate-900 dark:text-white">Add Fields</h2>
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2">
-                <button 
-                  onClick={() => addField('text')} 
-                  className="btn-outline inline-flex items-center justify-center gap-2 py-3"
-                >
-                  <Type className="h-4 w-4" />
-                  <span className="text-sm">Text</span>
-                </button>
-                <button 
-                  onClick={() => addField('textarea')} 
-                  className="btn-outline inline-flex items-center justify-center gap-2 py-3"
-                >
-                  <AlignLeft className="h-4 w-4" />
-                  <span className="text-sm">Long Text</span>
-                </button>
-                <button 
-                  onClick={() => addField('radio')} 
-                  className="btn-outline inline-flex items-center justify-center gap-2 py-3"
-                >
-                  <ListOrdered className="h-4 w-4" />
-                  <span className="text-sm">Choice</span>
-                </button>
-                <button 
-                  onClick={() => addField('checkbox')} 
-                  className="btn-outline inline-flex items-center justify-center gap-2 py-3"
-                >
-                  <CheckSquare className="h-4 w-4" />
-                  <span className="text-sm">Checkbox</span>
-                </button>
-                <button 
-                  onClick={() => addField('number')} 
-                  className="btn-outline inline-flex items-center justify-center gap-2 py-3"
-                >
-                  <Hash className="h-4 w-4" />
-                  <span className="text-sm">Number</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Fields List */}
-            <div className="space-y-3">
+        <div className="space-y-3">
           {fields.map((f, i) => (
             <div key={i} className="card space-y-3">
               <div className="flex items-start gap-2">
@@ -351,21 +308,33 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
             </div>
           ))}
         </div>
+
+        <div className="flex gap-3">
+          <button onClick={save} className="btn inline-flex items-center gap-2">
+            <Save className="h-4 w-4" />
+            Save Changes
+          </button>
+          <Link href="/forms" className="btn-outline">
+            Cancel
+          </Link>
+        </div>
       </section>
 
-      {/* Preview Section */}
-      <section className="lg:sticky lg:top-20 lg:self-start">
-        <div className="card overflow-hidden">
-          <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-            <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-[color:var(--brand-600)]" />
-              <span className="font-semibold text-sm text-slate-900 dark:text-white">Live Preview</span>
+      <section>
+        <div className="sticky top-20">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+              <Eye className="h-4 w-4" />
+              <span className="font-medium">Live Preview</span>
             </div>
-            <span className="badge text-xs">Real-time</span>
+            <span className="badge">
+              Updates in real-time
+            </span>
           </div>
           
-          {/* Form Header */}
-          <div className="bg-gradient-to-r from-[color:var(--brand-50)] to-[color:var(--brand-100)] dark:from-slate-800 dark:to-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
+          <div className="card overflow-hidden">
+            {/* Form Header */}
+            <div className="bg-gradient-to-r from-[color:var(--brand-50)] to-[color:var(--brand-100)] dark:from-slate-800 dark:to-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-lg bg-white dark:bg-slate-900 shadow-sm">
                   <FileText className="h-5 w-5 text-[color:var(--brand-600)]" />
@@ -510,59 +479,40 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
               )}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Version History - Full Width on Mobile, Below Preview on Desktop */}
-        <section className="lg:col-span-2">
-          <div className="card">
-            <div className="flex items-center gap-2 p-4 border-b border-slate-200 dark:border-slate-800">
-              <FileText className="h-4 w-4 text-[color:var(--brand-600)]" />
-              <h2 className="font-semibold text-slate-900 dark:text-white">Version History</h2>
-            </div>
-            <div className="p-4">
-              {!versions || versions.length === 0 ? (
-                <p className="muted text-sm text-center py-8">No versions yet.</p>
-              ) : (
-                <ul className="space-y-2">
-                  {versions.map((v: any) => (
-                    <li key={v.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {new Date(v.createdAt).toLocaleString()}
-                      </span>
-                      <button 
-                        className="btn btn-outline btn-sm self-start sm:self-auto"
-                        onClick={async () => {
-                          const ok = confirm('Restore this version? This will overwrite current form.');
-                          if (!ok) return;
-                          const token = localStorage.getItem('access_token');
-                          const headers: Record<string, string> = {};
-                          if (token) {
-                            headers['Authorization'] = `Bearer ${token}`;
-                          }
-                          const res = await fetch(`${API_URL}/api/forms/${params.id}/restore/${v.id}`, { 
-                            method: 'POST', 
-                            credentials: 'include',
-                            headers
-                          });
-                          if (res.ok) {
-                            window.location.reload();
-                          } else {
-                            alert('Failed to restore version');
-                          }
-                        }}
-                      >
-                        Restore
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </section>
-      </div>
-      {/* Close container */}
-      </div>
+      <section className="md:col-span-2">
+        <div className="card p-4">
+          <h2 className="section-title text-base mb-3">Version History</h2>
+          {!versions || versions.length === 0 ? (
+            <p className="muted text-sm">No versions yet.</p>
+          ) : (
+            <ul className="space-y-2">
+              {versions.map((v: any) => (
+                <li key={v.id} className="flex items-center justify-between text-sm">
+                  <span>{new Date(v.createdAt).toLocaleString()}</span>
+                  <button 
+                    className="btn btn-outline btn-sm"
+                    onClick={async () => {
+                      const ok = confirm('Restore this version? This will overwrite current form.');
+                      if (!ok) return;
+                      const res = await fetch(`${API_URL}/api/forms/${params.id}/restore/${v.id}`, { method: 'POST', credentials: 'include' });
+                      if (res.ok) {
+                        window.location.reload();
+                      } else {
+                        alert('Failed to restore version');
+                      }
+                    }}
+                  >
+                    Restore
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
