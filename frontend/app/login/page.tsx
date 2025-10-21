@@ -21,19 +21,35 @@ export default function LoginPage() {
     if (Object.keys(nextErrors).length > 0) return;
     setLoading(true);
     try {
+      console.log('Attempting login to:', `${API_URL}/api/auth/login`);
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      console.log('Login response status:', res.status);
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        console.error('Failed to parse response:', parseError);
+        setLoading(false);
+        setErrors({ server: 'Server error. Please try again.' });
+        return;
+      }
+      
+      console.log('Login response data:', data);
       setLoading(false);
-      const data = await res.json();
+      
       if (res.ok && data.token) {
+        console.log('Login successful, storing token');
         localStorage.setItem('access_token', data.token);
         window.location.href = '/forms';
       } else {
         let errorMsg = 'Invalid credentials';
         errorMsg = data?.message || errorMsg;
+        console.error('Login failed:', errorMsg);
         setErrors({ server: errorMsg });
       }
     } catch (error) {
