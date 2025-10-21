@@ -156,12 +156,12 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-24">
         <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Editor */}
           <section className="space-y-6">
             {/* Form Settings Card */}
-            <div className="card">
+            <div className="card p-6">
               <div className="flex items-center gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
                 <FileText className="h-5 w-5 text-[color:var(--brand-600)]" />
                 <h2 className="font-semibold text-slate-900 dark:text-white">Form Settings</h2>
@@ -226,7 +226,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Add Fields Section */}
-            <div className="card">
+            <div className="card p-6">
               <div className="flex items-center gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
                 <Plus className="h-5 w-5 text-[color:var(--brand-600)]" />
                 <h2 className="font-semibold text-slate-900 dark:text-white">Add Fields</h2>
@@ -274,7 +274,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
             {/* Form Fields */}
             <div className="space-y-3">
           {fields.map((f, i) => (
-            <div key={i} className="card space-y-3">
+            <div key={i} className="card p-4 space-y-3">
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-2">
                   <input 
@@ -514,7 +514,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
 
           {/* Version History - Full Width Below */}
           <section className="lg:col-span-2">
-            <div className="card">
+            <div className="card p-6">
               <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
                 <FileText className="h-4 w-4 text-[color:var(--brand-600)]" />
                 <h2 className="font-semibold text-slate-900 dark:text-white">Version History</h2>
@@ -558,6 +558,18 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
               )}
             </div>
           </section>
+        </div>
+      </div>
+      {/* Bottom Action Bar */}
+      <div className="fixed bottom-0 inset-x-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur border-t border-slate-200 dark:border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex items-center justify-end gap-2">
+            <button onClick={save} className="btn btn-primary inline-flex items-center gap-2">
+              <Save className="h-4 w-4" />
+              <span className="hidden sm:inline">Save Changes</span>
+              <span className="sm:hidden">Save</span>
+            </button>
+          </div>
         </div>
       </div>
     </main>
