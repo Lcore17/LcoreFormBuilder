@@ -129,65 +129,109 @@ export default function NewFormPage() {
   }
 
   return (
-    <main className="container py-10 grid md:grid-cols-2 gap-10">
-      <section className="space-y-8">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Create a New Form</h1>
-          <Link 
-            href="/forms/templates"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--brand-600)] hover:text-[color:var(--brand-700)] dark:text-[color:var(--brand-400)] dark:hover:text-[color:var(--brand-300)] transition-colors"
-          >
-            <Sparkles className="h-4 w-4" />
-            Use Template
-          </Link>
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      {/* Top Bar - Fixed on mobile */}
+      <div className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+        <div className="container">
+          <div className="flex items-center justify-between h-16 gap-3">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <Link 
+                href="/forms"
+                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors flex-shrink-0"
+                title="Back to Dashboard"
+              >
+                <FileText className="h-5 w-5" />
+              </Link>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg font-bold text-slate-900 dark:text-white truncate">
+                  {title || 'New Form'}
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+                  Create a new form
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Link 
+                href="/forms/templates"
+                className="btn-outline inline-flex items-center gap-2 text-sm px-3 py-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                <span className="hidden sm:inline">Templates</span>
+              </Link>
+              <button 
+                onClick={save} 
+                className="btn btn-primary inline-flex items-center gap-2 text-sm px-4 py-2"
+              >
+                <Save className="h-4 w-4" />
+                <span className="hidden sm:inline">Save</span>
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="card space-y-6 p-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <label className="label">Form Title</label>
-              <input 
-                className="input" 
-                value={title} 
-                onChange={(e) => setTitle(e.target.value)} 
-                placeholder="Enter form title"
-                maxLength={80}
-              />
-            </div>
-            <div>
-              <label className="label">Description</label>
-              <textarea 
-                className="input" 
-                placeholder="Brief description of your form" 
-                value={description} 
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-                maxLength={160}
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <input 
-              type="checkbox" 
-              checked={isPublic} 
-              onChange={(e) => setIsPublic(e.target.checked)}
-              className="rounded"
-              id="public-form"
-            /> 
-            <label htmlFor="public-form" className="font-medium text-sm">Make this form public</label>
-          </div>
-          {/* Advanced settings toggle */}
-          <button 
-            type="button"
-            className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-            onClick={() => setShowAdvanced((v) => !v)}
-          >
-            <span className="flex items-center gap-2 text-sm font-medium">
-              <SlidersHorizontal className="h-4 w-4" /> Advanced settings
-            </span>
-            <span className="text-xs text-slate-500">{showAdvanced ? 'Hide' : 'Show'}</span>
-          </button>
-          {showAdvanced && (
+      {/* Main Content */}
+      <div className="container py-4 lg:py-6">
+        <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
+          {/* Editor Section */}
+          <section className="space-y-4">
+            {/* Form Settings Card */}
+            <div className="card space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-800">
+                <FileText className="h-4 w-4 text-[color:var(--brand-600)]" />
+                <h2 className="font-semibold text-slate-900 dark:text-white">Form Settings</h2>
+              </div>
+              
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="label">Form Title *</label>
+                  <input 
+                    className="input" 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    placeholder="Enter form title"
+                    maxLength={80}
+                  />
+                </div>
+                <div>
+                  <label className="label">Description</label>
+                  <textarea 
+                    className="input resize-none" 
+                    placeholder="Brief description" 
+                    value={description} 
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={2}
+                    maxLength={160}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  checked={isPublic} 
+                  onChange={(e) => setIsPublic(e.target.checked)}
+                  className="rounded cursor-pointer"
+                  id="public-form"
+                /> 
+                <label htmlFor="public-form" className="font-medium text-sm cursor-pointer">Public Form</label>
+              </div>
+              
+              {/* Advanced settings toggle */}
+              <button 
+                type="button"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                onClick={() => setShowAdvanced((v) => !v)}
+              >
+                <span className="flex items-center gap-2 text-sm font-medium">
+                  <SlidersHorizontal className="h-4 w-4" /> Advanced Settings
+                </span>
+                <span className="text-xs text-slate-500">{showAdvanced ? 'Hide' : 'Show'}</span>
+              </button>
+              
+              {showAdvanced && (
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="label">Brand color</label>
@@ -495,20 +539,19 @@ export default function NewFormPage() {
         </div>
       </section>
 
-      <section>
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-              <Eye className="h-4 w-4" />
-              <span className="font-medium">Live Preview</span>
+      {/* Preview Section */}
+      <section className="lg:sticky lg:top-20 lg:self-start">
+        <div className="card overflow-hidden">
+          <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+            <div className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-[color:var(--brand-600)]" />
+              <span className="font-semibold text-sm text-slate-900 dark:text-white">Live Preview</span>
             </div>
-            <span className="badge">
-              Updates in real-time
-            </span>
+            <span className="badge text-xs">Real-time</span>
           </div>
-          <div className="card overflow-hidden">
-            {/* Form Header */}
-            <div className="bg-gradient-to-r from-[color:var(--brand-50)] to-[color:var(--brand-100)] dark:from-slate-800 dark:to-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
+          
+          {/* Form Header */}
+          <div className="bg-gradient-to-r from-[color:var(--brand-50)] to-[color:var(--brand-100)] dark:from-slate-800 dark:to-slate-800 p-6 border-b border-slate-200 dark:border-slate-700">
               <div className="flex items-start gap-3">
                 <div className="p-2 rounded-lg bg-white dark:bg-slate-900 shadow-sm">
                   <FileText className="h-5 w-5 text-[color:var(--brand-600)]" />
@@ -655,8 +698,10 @@ export default function NewFormPage() {
               )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
+      {/* Close container */}
+      </div>
     </main>
   );
 }
