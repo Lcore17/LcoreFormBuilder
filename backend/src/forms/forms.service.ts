@@ -14,32 +14,38 @@ export class FormsService {
   }
 
   async create(userId: string, data: any) {
-    const { fields = [], password, ...rest } = data;
-    const form = await this.prisma.form.create({
-      data: {
-        ...rest,
-        ownerId: userId,
-        passwordHash: password ? await (await import('bcrypt')).hash(password, 10) : null,
-        fields: {
-          create: fields.map((f: any, idx: number) => ({
-            label: f.label,
-            type: f.type,
-            required: !!f.required,
-            order: f.order ?? idx,
-            minLength: f.minLength ?? null,
-            maxLength: f.maxLength ?? null,
-            pattern: f.pattern ?? null,
-            minValue: f.minValue ?? null,
-            maxValue: f.maxValue ?? null,
-            options: f.options ?? [],
-          })),
+    try {
+      const { fields = [], password, ...rest } = data;
+      console.log('Creating form with data:', { ...rest, fieldsCount: fields.length, hasPassword: !!password });
+      const form = await this.prisma.form.create({
+        data: {
+          ...rest,
+          ownerId: userId,
+          passwordHash: password ? await (await import('bcrypt')).hash(password, 10) : null,
+          fields: {
+            create: fields.map((f: any, idx: number) => ({
+              label: f.label,
+              type: f.type,
+              required: !!f.required,
+              order: f.order ?? idx,
+              minLength: f.minLength ?? null,
+              maxLength: f.maxLength ?? null,
+              pattern: f.pattern ?? null,
+              minValue: f.minValue ?? null,
+              maxValue: f.maxValue ?? null,
+              options: f.options ?? [],
+            })),
+          },
         },
-      },
-      include: { fields: true },
-    });
-  // Use any cast in case generated Prisma types are stale
-  await (this.prisma as any).formVersion.create({ data: { formId: form.id, data: form } });
-    return form;
+        include: { fields: true },
+      });
+      // Use any cast in case generated Prisma types are stale
+      await (this.prisma as any).formVersion.create({ data: { formId: form.id, data: form } });
+      return form;
+    } catch (error) {
+      console.error('Error creating form:', error);
+      throw error;
+    }
   }
 
   async update(id: string, userId: string, data: any) {
