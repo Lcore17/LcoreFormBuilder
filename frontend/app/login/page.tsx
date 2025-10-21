@@ -24,22 +24,16 @@ export default function LoginPage() {
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
       setLoading(false);
-      if (res.ok) {
-        // Force a full page reload to update auth state everywhere
+      const data = await res.json();
+      if (res.ok && data.token) {
+        localStorage.setItem('access_token', data.token);
         window.location.href = '/forms';
       } else {
-        const text = await res.text();
         let errorMsg = 'Invalid credentials';
-        try {
-          const data = JSON.parse(text);
-          errorMsg = data?.message || errorMsg;
-        } catch {
-          console.error('Login error:', text);
-        }
+        errorMsg = data?.message || errorMsg;
         setErrors({ server: errorMsg });
       }
     } catch (error) {

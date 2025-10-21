@@ -7,20 +7,14 @@ if (typeof window !== 'undefined') {
   console.log('API_URL configured as:', API_URL);
 }
 
+
 function joinUrl(base: string, path: string) {
   const p = path.startsWith('/') ? path : `/${path}`;
   return `${base}${p}`;
 }
 
 export async function api<T>(path: string, init?: RequestInit): Promise<T> {
-  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
-    if (!process.env.NEXT_PUBLIC_API_URL || /^http:\/\/localhost/.test(process.env.NEXT_PUBLIC_API_URL)) {
-      console.warn('NEXT_PUBLIC_API_URL is not set to a public backend URL in production.');
-    }
-  }
-
   const url = joinUrl(API_URL, path);
-
   const res = await fetch(url, {
     credentials: 'include',
     headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) },

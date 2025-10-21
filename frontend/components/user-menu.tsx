@@ -14,7 +14,10 @@ export default function UserMenu() {
     let active = true;
     (async () => {
       try {
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include' });
+        const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+        const res = await fetch(`${API_URL}/api/auth/me`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         if (res.ok) {
           const data = (await res.json()) as Me;
           if (active) setMe(data);
@@ -29,11 +32,11 @@ export default function UserMenu() {
 
   const logout = async () => {
     try {
-      await fetch(`${API_URL}/api/auth/logout`, { method: 'POST', credentials: 'include' });
-      // Force full page reload to clear all auth state and redirect to home
+      await fetch(`${API_URL}/api/auth/logout`, { method: 'POST' });
+      localStorage.removeItem('access_token');
       window.location.href = '/';
     } catch (error) {
-      // Even if logout fails, redirect to home
+      localStorage.removeItem('access_token');
       window.location.href = '/';
     }
   };
