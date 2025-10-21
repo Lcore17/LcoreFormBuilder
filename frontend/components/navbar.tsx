@@ -15,7 +15,6 @@ export default function Navbar() {
     { href: '/features', label: 'Features', icon: Sparkles },
     { href: '/forms/templates', label: 'Templates', icon: Layers },
     { href: '/integrations', label: 'Integrations', icon: Puzzle },
-    { href: '/features/guide', label: 'Guide', icon: BookOpen },
   ];
 
   return (

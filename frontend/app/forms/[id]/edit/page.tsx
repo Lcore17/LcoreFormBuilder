@@ -156,108 +156,123 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid lg:grid-cols-2 gap-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left Column - Editor */}
           <section className="space-y-6">
             {/* Form Settings Card */}
-            <div className="card space-y-4">
-          <div>
-            <label className="label">Form Title</label>
-            <input 
-              className="input" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              placeholder="Enter form title"
-            />
-          </div>
-          
-          <div>
-            <label className="label">Description</label>
-            <textarea 
-              className="input" 
-              placeholder="Brief description of your form" 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </div>
-          
-          <label className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox" 
-              checked={isPublic} 
-              onChange={(e) => setIsPublic(e.target.checked)}
-              className="rounded"
-            /> 
-            <span className="font-medium">Public Form</span>
-          </label>
-          
-          <label className="flex items-center gap-2 text-sm">
-            <input 
-              type="checkbox" 
-              checked={enableCaptcha} 
-              onChange={(e) => setEnableCaptcha(e.target.checked)}
-              className="rounded"
-            /> 
-            <span className="font-medium">Enable CAPTCHA</span>
-          </label>
-          
-          <div>
-            <label className="label">Form Password (optional)</label>
-            <input 
-              className="input" 
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Set or update a password"
-            />
-            <p className="text-xs muted mt-1">Leave blank to keep existing. Clear existing by saving empty.</p>
-          </div>
-        </div>
+            <div className="card">
+              <div className="flex items-center gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+                <FileText className="h-5 w-5 text-[color:var(--brand-600)]" />
+                <h2 className="font-semibold text-slate-900 dark:text-white">Form Settings</h2>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="label">Form Title</label>
+                  <input 
+                    className="input" 
+                    value={title} 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    placeholder="Enter form title"
+                  />
+                </div>
+                
+                <div>
+                  <label className="label">Description</label>
+                  <textarea 
+                    className="input" 
+                    placeholder="Brief description of your form" 
+                    value={description} 
+                    onChange={(e) => setDescription(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={isPublic} 
+                      onChange={(e) => setIsPublic(e.target.checked)}
+                      className="rounded cursor-pointer"
+                    /> 
+                    <span className="font-medium">Public Form</span>
+                  </label>
+                  
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={enableCaptcha} 
+                      onChange={(e) => setEnableCaptcha(e.target.checked)}
+                      className="rounded cursor-pointer"
+                    /> 
+                    <span className="font-medium">Enable CAPTCHA</span>
+                  </label>
+                </div>
+                
+                <div>
+                  <label className="label">Form Password (optional)</label>
+                  <input 
+                    className="input" 
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Set or update a password"
+                  />
+                  <p className="text-xs muted mt-1">Leave blank to keep existing password</p>
+                </div>
+              </div>
+            </div>
 
-        <div>
-          <h2 className="section-title text-base mb-3">Add Fields</h2>
-          <div className="flex flex-wrap gap-2">
-            <button 
-              onClick={() => addField('text')} 
-              className="btn-outline inline-flex items-center gap-2"
-            >
-              <Type className="h-4 w-4" />
-              Text
-            </button>
-            <button 
-              onClick={() => addField('textarea')} 
-              className="btn-outline inline-flex items-center gap-2"
-            >
-              <AlignLeft className="h-4 w-4" />
-              Long Text
-            </button>
-            <button 
-              onClick={() => addField('radio')} 
-              className="btn-outline inline-flex items-center gap-2"
-            >
-              <ListOrdered className="h-4 w-4" />
-              Choice
-            </button>
-            <button 
-              onClick={() => addField('checkbox')} 
-              className="btn-outline inline-flex items-center gap-2"
-            >
-              <CheckSquare className="h-4 w-4" />
-              Checkbox
-            </button>
-            <button 
-              onClick={() => addField('number')} 
-              className="btn-outline inline-flex items-center gap-2"
-            >
-              <Hash className="h-4 w-4" />
-              Number
-            </button>
-          </div>
-        </div>
+            {/* Add Fields Section */}
+            <div className="card">
+              <div className="flex items-center gap-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800">
+                <Plus className="h-5 w-5 text-[color:var(--brand-600)]" />
+                <h2 className="font-semibold text-slate-900 dark:text-white">Add Fields</h2>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                <button 
+                  onClick={() => addField('text')} 
+                  className="btn-outline inline-flex items-center gap-2"
+                >
+                  <Type className="h-4 w-4" />
+                  Text
+                </button>
+                <button 
+                  onClick={() => addField('textarea')} 
+                  className="btn-outline inline-flex items-center gap-2"
+                >
+                  <AlignLeft className="h-4 w-4" />
+                  Long Text
+                </button>
+                <button 
+                  onClick={() => addField('radio')} 
+                  className="btn-outline inline-flex items-center gap-2"
+                >
+                  <ListOrdered className="h-4 w-4" />
+                  Choice
+                </button>
+                <button 
+                  onClick={() => addField('checkbox')} 
+                  className="btn-outline inline-flex items-center gap-2"
+                >
+                  <CheckSquare className="h-4 w-4" />
+                  Checkbox
+                </button>
+                <button 
+                  onClick={() => addField('number')} 
+                  className="btn-outline inline-flex items-center gap-2"
+                >
+                  <Hash className="h-4 w-4" />
+                  Number
+                </button>
+              </div>
+            </div>
 
-        <div className="space-y-3">
+            {/* Form Fields */}
+            <div className="space-y-3">
           {fields.map((f, i) => (
             <div key={i} className="card space-y-3">
               <div className="flex items-start gap-2">

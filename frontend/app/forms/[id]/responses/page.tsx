@@ -163,10 +163,10 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
       </div>
 
       {/* Content Section */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
 
         {!submissions || submissions.length === 0 ? (
-          <div className="card max-w-2xl mx-auto">
+          <div className="card max-w-2xl mx-auto p-6">
             <div className="text-center py-16 px-4">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6">
                 <Inbox className="h-10 w-10 text-slate-400" />
@@ -184,7 +184,7 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
         ) : (
           <>
             {/* Stats Card */}
-            <div className="card mb-6">
+            <div className="card p-6 mb-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div className="text-center sm:text-left">
                   <div className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
@@ -217,7 +217,7 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
             {viewMode === 'cards' && (
               <div className="space-y-4">
                 {submissions.map((submission: any, idx: number) => (
-                  <div key={submission.id} className="card hover:shadow-lg transition-shadow">
+                  <div key={submission.id} className="card p-6 hover:shadow-lg transition-shadow">
                     {/* Submission Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-200 dark:border-slate-700">
                       <div className="flex items-center gap-3">
@@ -270,8 +270,8 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
 
             {/* Table View */}
             {viewMode === 'table' && (
-              <div className="card overflow-hidden">
-                <div className="overflow-x-auto">
+              <div className="card p-6 overflow-hidden">
+                <div className="overflow-x-auto -mx-6">
                   <table className="w-full">
                     <thead className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
                       <tr>
