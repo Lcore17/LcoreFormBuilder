@@ -23,6 +23,7 @@ export class AuthController {
 			sameSite: isProd ? 'none' : 'lax',
 			secure: isProd,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
+            domain: isProd ? '.onrender.com' : undefined,
 		});
 		return { user };
 	}
