@@ -128,7 +128,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Header - Fixed at top */}
-      <div className="fixed top-16 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm">
+      <div className="fixed top-16 left-0 right-0 z-[60] bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-md">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-3">
             <Link 
@@ -555,7 +555,7 @@ export default function EditFormPage({ params }: { params: { id: string } }) {
       </div>
       
       {/* Bottom Action Bar - Fixed */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl">
+      <div className="fixed bottom-0 left-0 right-0 z-[60] bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-2xl">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between gap-4">
             <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
