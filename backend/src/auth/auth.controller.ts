@@ -18,13 +18,17 @@ export class AuthController {
 	async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
 		const { token, user } = await this.authService.login(dto);
 		const isProd = process.env.NODE_ENV === 'production';
-		res.cookie('access_token', token, {
+		const cookieOptions: any = {
 			httpOnly: true,
 			sameSite: isProd ? 'none' : 'lax',
 			secure: isProd,
 			maxAge: 7 * 24 * 60 * 60 * 1000,
-            domain: isProd ? (process.env.COOKIE_DOMAIN || undefined) : undefined,
-		});
+		};
+		if (isProd && process.env.COOKIE_DOMAIN) {
+			cookieOptions.domain = process.env.COOKIE_DOMAIN;
+		}
+		// Fallback: do NOT set domain if not specified, to maximize compatibility
+		res.cookie('access_token', token, cookieOptions);
 		return { user };
 	}
 
