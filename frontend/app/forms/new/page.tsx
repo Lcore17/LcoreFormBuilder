@@ -21,9 +21,6 @@ import {
   SlidersHorizontal
 } from 'lucide-react';
 
-// Force dynamic rendering since this page requires authentication
-export const dynamic = 'force-dynamic';
-
 type Field = { id?: string; label: string; type: string; required?: boolean; options?: string[]; order: number; minLength?: number | null; maxLength?: number | null; minValue?: number | null; maxValue?: number | null; pattern?: string | null };
 
 export default function NewFormPage() {

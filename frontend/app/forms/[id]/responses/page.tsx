@@ -5,9 +5,6 @@ import useSWR from 'swr';
 import Link from 'next/link';
 import { ArrowLeft, Download, FileJson, FileSpreadsheet, Loader2, Inbox } from 'lucide-react';
 
-// Force dynamic rendering since this page requires authentication
-export const dynamic = 'force-dynamic';
-
 const fetcher = (url: string) => {
   const token = localStorage.getItem('access_token');
   const headers: Record<string, string> = {};
