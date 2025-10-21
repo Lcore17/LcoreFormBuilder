@@ -13,19 +13,22 @@ export default function UserMenu() {
   useEffect(() => {
     let active = true;
     (async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
       try {
         const token = localStorage.getItem('access_token');
         const headers: Record<string, string> = {};
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
         }
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers, signal: controller.signal });
         if (res.ok) {
           const data = (await res.json()) as Me;
           if (active) setMe(data);
         }
       } catch {}
       if (active) setLoading(false);
+      clearTimeout(timeout);
     })();
     return () => {
       active = false;

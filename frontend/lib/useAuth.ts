@@ -11,13 +11,15 @@ export function useAuth() {
   useEffect(() => {
     let mounted = true;
     (async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 7000);
       try {
         const token = localStorage.getItem('access_token');
         const headers: Record<string, string> = {};
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
         }
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers, signal: controller.signal });
         if (!res.ok && mounted) {
           localStorage.removeItem('access_token');
           window.location.href = '/login';
@@ -30,6 +32,8 @@ export function useAuth() {
           localStorage.removeItem('access_token');
           window.location.href = '/login';
         }
+      } finally {
+        clearTimeout(timeout);
       }
     })();
     return () => {

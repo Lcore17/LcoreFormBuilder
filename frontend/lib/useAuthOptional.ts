@@ -9,13 +9,15 @@ export function useAuthOptional() {
   useEffect(() => {
     let mounted = true;
     (async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
       try {
         const token = localStorage.getItem('access_token');
         const headers: Record<string, string> = {};
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
         }
-        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers });
+        const res = await fetch(`${API_URL}/api/auth/me`, { credentials: 'include', headers, signal: controller.signal });
         if (mounted) {
           setIsAuthenticated(res.ok);
           setIsChecking(false);
@@ -25,6 +27,8 @@ export function useAuthOptional() {
           setIsAuthenticated(false);
           setIsChecking(false);
         }
+      } finally {
+        clearTimeout(timeout);
       }
     })();
     return () => {
